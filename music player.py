@@ -11,7 +11,7 @@ from tkinter import *
 root = tk.Tk()
 
 root.title("Music Player ⌐■_■")
-root.geometry('450x400')
+root.geometry('460x435')
 root.resizable(False,False)
 
 class Player(tk.Frame):
@@ -21,17 +21,20 @@ class Player(tk.Frame):
         self.gui()
 
     def gui(self):
-        self.playFrame = LabelFrame(self.master, height = 100, width = 440, bg = 'gray')
-        self.playFrame.place(x = 5, y = 295)
+        self.playFrame = LabelFrame(self.master, height = 130, width = 450, bg = 'gray')
+        self.playFrame.place(x = 5, y = 300)
+
+        self.pl_time = Label(self.playFrame, text = '00:00', fg = 'white',bg = 'gray', font =('calibri',12))
+        self.pl_time.place(x=5,y=5)
 
         self.musicFrame = LabelFrame(self.playFrame, height = 85, width = 85)
-        self.musicFrame.place(x = 5, y = 5)
+        self.musicFrame.place(x = 5, y = 35)
 
         self.music = Label(self.musicFrame, text = '♫',fg = 'gray', font = ('impact',40))
         self.music.place(x = 15, y = 3)
         
-        self.play = Button(self.playFrame, text ='▶', font = ('impact',15), width = 4, bg = 'lightgray')
-        self.play.place(x = 228, y = 45)
+        self.play = Button(self.playFrame, text = '▶', font = ('impact',15), width = 4,fg = 'black', bg = 'white')
+        self.play.place(x = 230, y = 77)
 
 Player(root).place()
 
