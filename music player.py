@@ -11,7 +11,7 @@ from tkinter import *
 root = tk.Tk()
 
 root.title("Music Player ⌐■_■")
-root.geometry('460x435')
+root.geometry('460x430')
 root.resizable(False,False)
 
 class Player(tk.Frame):
@@ -21,21 +21,21 @@ class Player(tk.Frame):
         self.gui()
 
     def gui(self):
-        self.playFrame = LabelFrame(self.master, height = 125, width = 450, bg = 'gray',borderwidth = 0)
-        self.playFrame.place(x = 5, y = 305)
+        self.playFrame = LabelFrame(self.master, height = 125, width = 460, bg = 'gray',borderwidth = 0)
+        self.playFrame.place(x = 0, y = 330)
 
-        self.pl_time = Label(self.playFrame, text = '00:00', fg = 'white',bg = 'gray', font =('calibri',12))
-        self.pl_time.place(x=5,y=5)
+        self.pl_time = Label(self.playFrame, text = '00:00', fg = 'white',bg = 'gray', font =('calibri',11))
+        self.pl_time.place(x=100,y=3)
 
-        self.musicFrame = LabelFrame(self.playFrame, height = 85, width = 85,borderwidth = 0)
-        self.musicFrame.place(x = 5, y = 35)
+        self.musicFrame = LabelFrame(self.playFrame, height = 89, width = 89,borderwidth = 0)
+        self.musicFrame.place(x = 5, y = 6)
 
         self.music = Label(self.musicFrame, text = '♫',fg = 'gray', font = ('impact',40))
         self.music.place(x = 15, y = 3)
         
         self.play = Button(self.playFrame, text = '▶', font = ('impact',20), width = 4,fg = 'white', bg = 'gray',
                            activeforeground = 'orange',activebackground = 'gray',borderwidth = 0)
-        self.play.place(x = 230, y = 75)
+        self.play.place(x = 230, y = 50)
 
 Player(root).place()
 
