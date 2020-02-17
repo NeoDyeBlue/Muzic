@@ -33,8 +33,9 @@ class Player(tk.Frame):
         self.music = Label(self.musicFrame, text = '♫',fg = 'gray', font = ('impact',40))
         self.music.place(x = 15, y = 3)
         
-        self.play = Button(self.playFrame, text = '▶', font = ('impact',15), width = 4,fg = 'gray',activeforeground = 'orange',borderwidth = 0)
-        self.play.place(x = 230, y = 77)
+        self.play = Button(self.playFrame, text = '▶', font = ('impact',20), width = 4,fg = 'white', bg = 'gray',
+                           activeforeground = 'orange',activebackground = 'gray',borderwidth = 0)
+        self.play.place(x = 230, y = 75)
 
 Player(root).place()
 
