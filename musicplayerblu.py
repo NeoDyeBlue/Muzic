@@ -1,5 +1,6 @@
 import os
 os.add_dll_directory(r'C:\Program Files\VideoLAN\VLC')
+import eyed3
 import vlc
 import tkinter as tk
 from tkinter import filedialog
@@ -16,7 +17,6 @@ class Player(tk.Frame):
     def __init__(self,master):
         tk.Frame.__init__(self,master)
         self.master = master
-        self.SONGS = list()
         self.MUSICS = list()
         self.PsePly = '▶'
         self.gui()
@@ -54,7 +54,7 @@ class Player(tk.Frame):
         self.playFrame.place(x = 0, y = 372)
 
         self.pl_time = Label(self.playFrame, text = '00:00', fg = 'white',bg = 'gray45', font =('calibri',8))
-        self.pl_time.place(x=90,y=5)
+        self.pl_time.place(x=95,y=5)
 
         self.musicFrame = Frame(self.playFrame, height = 90, width = 90,borderwidth = 0)
         self.musicFrame.place(x = 0, y = 0)
@@ -65,6 +65,13 @@ class Player(tk.Frame):
         self.play = Button(self.playFrame, text = self.PsePly, font = ('impact',20),fg = 'white', bg = 'gray45',
                            activeforeground = 'deepskyblue',activebackground = 'gray45',borderwidth = 0, command = self.pseply)
         self.play.place(x = 270, y = 40)
+
+        self.Artist = Label(self.playFrame, text = 'Artist', font = ('calibri',10,), fg = 'white', bg = 'gray45')
+        self.Artist.place(x = 95, y = 40)
+
+        self.Songname = Label(self.playFrame, text = 'Song Name', font = ('calibri',12,'bold'), fg = 'white', bg = 'gray45')
+        self.Songname.place(x = 95, y = 20)
+    
 
     def nothing(self):
         pass
@@ -80,7 +87,6 @@ class Player(tk.Frame):
             self.music.config(fg = 'gray15')
 
     def askdirctry(self):
-        self.SONGS.clear()
         self.MUSICS.clear()
         self.mlist.delete(0,tk.END)
         self.nomusic.place(x = 108, y = 190)
@@ -97,17 +103,15 @@ class Player(tk.Frame):
 
         for x in os.listdir(self.folderop):
             if x.endswith('.mp3') or x.endswith('.wav'):
-                self.SONGS.append(x)
-                self.MUSICS.append("   ♪  {0}".format(x))
-
-        
+                self.MUSICS.append(x)
+       
         if len(self.MUSICS) == 0:
             self.foldr.config(fg = 'white')
             self.nomusic.config(text = 'No songs found in this folder')
         else:
             for s in self.MUSICS:
                 self.nomusic.place_forget()
-                self.mlist.insert(END, s)
+                self.mlist.insert(END, "   ♪  {0}".format(s))
                 self.mlist.config()
 Player(root).place()
 
