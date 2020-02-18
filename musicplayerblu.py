@@ -8,7 +8,7 @@ from tkinter import *
 root = tk.Tk()
 
 root.title("Music Player ♫")
-root.geometry('505x462')
+root.geometry('504x462')
 root.config(bg = 'gray25')
 root.resizable(False,False)
 
@@ -22,20 +22,20 @@ class Player(tk.Frame):
         self.gui()
 
     def gui(self):
-        self.MusicList = Frame(self.master, height = 374, width = 420, borderwidth = 0, bg = 'gray20')
-        self.MusicList.place(x = 90, y = 0)
+        self.MListframe = Frame(self.master, height = 374, width = 420, borderwidth = 0, bg = 'gray20')
+        self.MListframe.place(x = 90, y = 0)
 
-        self.dirctry = Frame(self.MusicList, height = 30, width = 405, bg = 'gray45', borderwidth = 0)
-        self.dirctry.place(x = 10, y = 10)
+        self.dirframe = Frame(self.MListframe, height = 30, width = 405, bg = 'gray45', borderwidth = 0)
+        self.dirframe.place(x = 10, y = 10)
 
-        self.foldr = Button(self.dirctry, text = '🗀', font = ('impact', 20), fg = 'white', bg = 'gray45',
+        self.foldr = Button(self.dirframe, text = '🗀', font = ('impact', 20), fg = 'white', bg = 'gray45',
                             activeforeground = 'cyan', activebackground = 'gray45', borderwidth = 0,command = self.askdirctry)
         self.foldr.place(x = 1, y = -17)
 
-        self.fldrnme = Label(self.dirctry, text = '← Choose a folder to look for .mp3 and .wav files.',font =('calibri',8), fg = 'white', bg = 'gray45')
+        self.fldrnme = Label(self.dirframe, text = '← Choose a folder to look for .mp3 and .wav files.',font =('calibri',8), fg = 'white', bg = 'gray45')
         self.fldrnme.place(x = 40, y = 5)
 
-        self.lbframe = Frame(self.MusicList, borderwidth = 0, height = 500, width = 360, bg = 'gray')
+        self.lbframe = Frame(self.MListframe, borderwidth = 0, height = 500, width = 360, bg = 'gray')
         self.lbframe.place(x= 10, y = 40)
 
         self.sb = Scrollbar(self.lbframe, orient = VERTICAL,bg = 'deepskyblue')
@@ -47,7 +47,7 @@ class Player(tk.Frame):
 
         self.sb.config(command = self.mlist.yview)
 
-        self.nomusic = Label(self.MusicList, text = 'Please choose a folder first!', font =('calibri',12), fg = 'white', bg = 'gray15')
+        self.nomusic = Label(self.MListframe, text = 'Please choose a folder first!', font =('calibri',12), fg = 'white', bg = 'gray15')
         self.nomusic.place(x = 108, y = 190)
 
         self.playFrame = Frame(self.master, height = 90, width = 505, bg = 'gray45',borderwidth = 0)
@@ -64,7 +64,7 @@ class Player(tk.Frame):
         
         self.play = Button(self.playFrame, text = self.PsePly, font = ('impact',20),fg = 'white', bg = 'gray45',
                            activeforeground = 'deepskyblue',activebackground = 'gray45',borderwidth = 0, command = self.pseply)
-        self.play.place(x = 245, y = 40)
+        self.play.place(x = 270, y = 40)
 
     def nothing(self):
         pass
