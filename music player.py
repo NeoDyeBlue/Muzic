@@ -18,22 +18,10 @@ class Player(tk.Frame):
     def __init__(self,master):
         tk.Frame.__init__(self,master)
         self.master = master
+        self.PsePly = '▶'
         self.gui()
 
     def gui(self):
-        """
-        self.menubar = Menu(self.master)
-        self.pmenu = Menu(self.menubar, tearoff=0)
-        self.pmenu.add_command(label="Directory",command = self.nothing)
-        self.pmenu.add_separator()
-        self.pmenu.add_command(label="Exit", command=self.master.destroy)
-        self.menubar.add_cascade(label="Player", menu = self.pmenu)
-    
-        self.omenu = Menu(self.menubar, tearoff=0)
-        self.omenu.add_command(label="Theme",command = self.nothing)
-        self.menubar.add_cascade(label="Options",menu = self.omenu)
-        self.master.config(menu=self.menubar)
-        """
         self.playFrame = LabelFrame(self.master, height = 125, width = 460, bg = 'gray',borderwidth = 0)
         self.playFrame.place(x = 0, y = 330)
 
@@ -46,9 +34,9 @@ class Player(tk.Frame):
         self.music = Label(self.musicFrame, text = '♫',fg = 'gray', font = ('impact',40))
         self.music.place(x = 15, y = 3)
         
-        self.play = Button(self.playFrame, text = '▶', font = ('impact',20),fg = 'white', bg = 'gray',
-                           activeforeground = 'orange',activebackground = 'gray',borderwidth = 0)
-        self.play.place(x = 230, y = 50)
+        self.play = Button(self.playFrame, text = self.PsePly, font = ('impact',20),fg = 'white', bg = 'gray',
+                           activeforeground = 'orange',activebackground = 'gray',borderwidth = 0, command = self.pseply)
+        self.play.place(x = 245, y = 50)
 
         self.MusicList = LabelFrame(self.master, height = 320, width = 360, borderwidth = 0, bg = 'lightgray')
         self.MusicList.place(x = 100, y = 0)
@@ -60,11 +48,26 @@ class Player(tk.Frame):
                             activeforeground = 'orange', activebackground = 'gray', borderwidth = 0,command = self.askdirctry)
         self.foldr.place(x = 1, y = -17)
 
+        self.fldrnme = Label(self.dirctry, text = '← Choose a directory to look for mp3 and wav files.', fg = 'white', bg = 'gray')
+        self.fldrnme.place(x = 40, y = 4)
+
     def nothing(self):
         pass
 
+    def pseply(self):
+        if self.PsePly == '▶':
+            self.PsePly = 'II'
+            self.play.config(text = self.PsePly)
+        elif self.PsePly == 'II':
+            self.PsePly = '▶'
+            self.play.config(text = self.PsePly)
+
     def askdirctry(self):
         self.folderop = filedialog.askdirectory()
+        if len(self.folderop) > 47:
+            self.fldrnme.config(text = '← ' + self.folderop[0:47]+'...')
+        else:
+            self.fldrnme.config(text = '← ' + self.folderop)
 
 Player(root).place()
 
