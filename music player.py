@@ -80,7 +80,6 @@ class Player(tk.Frame):
             self.music.config(fg = 'gray15')
 
     def askdirctry(self):
-        self.count = 1
         self.SONGS.clear()
         self.MUSICS.clear()
         self.mlist.delete(0,tk.END)
@@ -99,8 +98,8 @@ class Player(tk.Frame):
         for x in os.listdir(self.folderop):
             if x.endswith('.mp3') or x.endswith('.wav'):
                 self.SONGS.append(x)
-                self.MUSICS.append("  {0}. {1}".format(self.count,x))
-            self.count += 1
+                self.MUSICS.append("  > {0}".format(x))
+
         
         if len(self.MUSICS) == 0:
             self.nomusic.config(text = 'No songs found in this folder')
