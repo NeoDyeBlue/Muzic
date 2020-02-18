@@ -1,13 +1,13 @@
 import os
-os.add_dll_directory(r'C:\Program Files\VideoLAN\VLC')
 import eyed3
 import vlc
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import *
 
-root = tk.Tk()
+os.add_dll_directory(r'C:\Program Files\VideoLAN\VLC')
 
+root = tk.Tk()
 root.title("Music Player ♫")
 root.geometry('504x462')
 root.config(bg = 'gray25')
