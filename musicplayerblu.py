@@ -1,11 +1,10 @@
-import os
-import eyed3
-import vlc
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import *
-
+import eyed3
+import os
 os.add_dll_directory(r'C:\Program Files\VideoLAN\VLC')
+import vlc
 
 root = tk.Tk()
 root.title("Music Player ♫")
