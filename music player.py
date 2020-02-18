@@ -10,7 +10,7 @@ from tkinter import *
 
 root = tk.Tk()
 
-root.title("Music Player ⌐■_■")
+root.title("Music Player ♫")
 root.geometry('460x430')
 root.resizable(False,False)
 
