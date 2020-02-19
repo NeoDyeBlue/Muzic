@@ -16,6 +16,7 @@ class Player(tk.Frame):
     def __init__(self,master):
         tk.Frame.__init__(self,master)
         self.master = master
+        self.master.bind('Return')
         self.MUSICS = list()
         self.PsePly = '▶'
         self.gui()
@@ -90,28 +91,30 @@ class Player(tk.Frame):
         self.mlist.delete(0,tk.END)
         self.nomusic.place(x = 108, y = 190)
         self.folderop = filedialog.askdirectory()
-        if len(self.folderop) > 65:
-            self.foldr.config(fg = 'cyan')
-            self.fldrnme.config(text = '← ' + self.folderop[0:65]+'...')
-        elif len(self.folderop) == 0:
+
+        if not self.folderop:
             self.foldr.config(fg = 'white')
             self.fldrnme.config(text = '← Choose a folder to look for .mp3 and .wav files.')
         else:
-            self.foldr.config(fg = 'cyan')
-            self.fldrnme.config(text = '← ' + self.folderop)
+            if len(self.folderop) > 65:
+                self.foldr.config(fg = 'cyan')
+                self.fldrnme.config(text = '← ' + self.folderop[0:65]+'...')
+            else:
+                self.foldr.config(fg = 'cyan')
+                self.fldrnme.config(text = '← ' + self.folderop)
 
-        for x in os.listdir(self.folderop):
-            if x.endswith('.mp3') or x.endswith('.wav'):
-                self.MUSICS.append(x)
+            for x in os.listdir(self.folderop):
+                if x.endswith('.mp3') or x.endswith('.wav'):
+                    self.MUSICS.append(x)
        
-        if len(self.MUSICS) == 0:
-            self.foldr.config(fg = 'white')
-            self.nomusic.config(text = 'No songs found in this folder')
-        else:
-            for s in self.MUSICS:
-                self.nomusic.place_forget()
-                self.mlist.insert(END, "   ♪  {0}".format(s))
-                self.mlist.config()
+            if len(self.MUSICS) == 0:
+                self.foldr.config(fg = 'white')
+                self.nomusic.config(text = 'No songs found in this folder')
+            else:
+                for s in self.MUSICS:
+                    self.nomusic.place_forget()
+                    self.mlist.insert(END, "   ♪  {0}".format(s))
+                    self.mlist.config()
 Player(root).place()
 
 root.mainloop()
