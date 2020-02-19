@@ -16,8 +16,6 @@ class Player(tk.Frame):
     def __init__(self,master):
         tk.Frame.__init__(self,master)
         self.master = master
-        self.master.bind('<Return>')
-        self.MUSICS = list()
         self.PsePly = '▶'
         self.gui()
 
@@ -62,45 +60,33 @@ class Player(tk.Frame):
         self.current_songFrame.place(x = 0, y = 20)
         self.Artist = Label(self.current_songFrame, text = 'Artist', font = ('calibri',10,), fg = 'white', bg = 'gray45')
         self.Artist.place(x = 97, y = 18)
-        self.Songname = Label(self.current_songFrame, text = 'Song Name', font = ('calibri',12,'bold'), fg = 'white', bg = 'gray45')
+        self.Songname = Label(self.current_songFrame, text = 'Song Name or File Name', font = ('calibri',12,'bold'), fg = 'white', bg = 'gray45')
         self.Songname.place(x = 97, y = -3)
 
-        self.MPbuttonsFrame = Frame(self.master, height = 28, width = 508, bg = 'gray55')
+        self.MPbuttonsFrame = Frame(self.master, height = 28, width = 508, bg = 'gray15')
         self.MPbuttonsFrame.place(x = 0, y = 438)
 
-        self.play = Button(self.MPbuttonsFrame, text = self.PsePly, font = ('impact',19),fg = 'white', bg = 'gray55',
-                           activeforeground = 'deepskyblue',activebackground = 'gray55',borderwidth = 0, command = self.pseply)
-        self.play.place(x = 114, y = -16)
+        self.pauseplayb = Button(self.MPbuttonsFrame, text = self.PsePly, font = ('impact',18),fg = 'white', bg = 'gray15',state = DISABLED,
+                           activeforeground = 'deepskyblue',activebackground = 'gray15',borderwidth = 0, command = self.pseply)
+        self.pauseplayb.place(x = 278, y = -12)
 
-        self.prev= Button(self.MPbuttonsFrame, text = '<', font = ('impact',17),fg = 'white', bg = 'gray55',
-                           activeforeground = 'deepskyblue',activebackground = 'gray55',borderwidth = 0)
-        self.prev.place(x = 94, y = -8)
+        self.prevb= Button(self.MPbuttonsFrame, text = '<', font = ('impact',17),fg = 'white', bg = 'gray15',state = DISABLED,
+                           activeforeground = 'deepskyblue',activebackground = 'gray15',borderwidth = 0)
+        self.prevb.place(x = 248, y = -8)
+
+        self.nextb= Button(self.MPbuttonsFrame, text = '>', font = ('impact',17),fg = 'white', bg = 'gray15',state = DISABLED,
+                           activeforeground = 'deepskyblue',activebackground = 'gray15',borderwidth = 0)
+        self.nextb.place(x = 314, y = -8)
 
         self.MusicNoteFrame = Frame(self.master, height = 94, width = 94,borderwidth = 0)
         self.MusicNoteFrame.place(x = 0, y = 372)
 
-        self.music = Label(self.MusicNoteFrame, text = '♫',fg = 'gray15', font = ('impact',40))
+        self.music = Label(self.MusicNoteFrame, text = '♫',fg = 'gray20', font = ('impact',40))
         self.music.place(x = 22, y = 8)
 
-    
-
-    def nothing(self):
-        pass
-
-    def pseply(self):
-        if self.PsePly == '▶':
-            self.PsePly = 'I I'
-            self.play.config(text = self.PsePly, font = ('impact',14))
-            self.play.place(x = 118, y = -4)
-            self.music.config(fg ='deepskyblue4')
-        elif self.PsePly == 'I I':
-            self.PsePly = '▶'
-            self.play.config(text = self.PsePly, font = ('impact',19))
-            self.play.place(x = 114, y = -16)
-            self.music.config(fg = 'gray15')
-
     def askdirctry(self):
-        self.MUSICS.clear()
+        self.mlist.bind('<Double-Button-1>', self.Playm)
+        self.foldr.config(command = self.stopPlay)
         self.mlist.delete(0,tk.END)
         self.nomusic.place(x = 108, y = 190)
         self.folderop = filedialog.askdirectory()
@@ -108,26 +94,80 @@ class Player(tk.Frame):
         if not self.folderop:
             self.foldr.config(fg = 'white')
             self.fldrnme.config(text = '← Choose a folder to look for .mp3 and .wav files.')
+            self.nomusic.config(text = 'Please choose a folder first!')
+            self.tobedisabled = [self.pauseplayb,self.prevb,self.nextb]
+            for y in self.tobedisabled:
+                y.config(state = DISABLED)
         else:
             if len(self.folderop) > 65:
-                self.foldr.config(fg = 'cyan')
                 self.fldrnme.config(text = '← ' + self.folderop[0:65]+'...')
             else:
-                self.foldr.config(fg = 'cyan')
                 self.fldrnme.config(text = '← ' + self.folderop)
 
             for x in os.listdir(self.folderop):
                 if x.endswith('.mp3') or x.endswith('.wav'):
-                    self.MUSICS.append(x)
-       
-            if len(self.MUSICS) == 0:
-                self.foldr.config(fg = 'white')
-                self.nomusic.config(text = 'No songs found in this folder')
-            else:
-                for s in self.MUSICS:
+                    self.foldr.config(fg ='cyan')
                     self.nomusic.place_forget()
-                    self.mlist.insert(END, "   ♪  {0}".format(s))
+                    self.mlist.insert(END, "   ♪  {0}".format(x))
                     self.mlist.config()
+                else:
+                    self.foldr.config(fg = 'white')
+                    self.nomusic.config(text = 'No songs found in this folder')
+                    self.tobedisabled = [self.pauseplayb,self.prevb,self.nextb]
+                    for y in self.tobedisabled:
+                        y.config(state = DISABLED)
+
+    def proceedPlay(self):
+        self.mlist.bind('<Double-Button-1>', self.Stopm)
+        self.tobeenabled = [self.pauseplayb, self.prevb,self.nextb]
+        for x in self.tobeenabled:
+            x.config(state = NORMAL)
+        self.fchoice = self.mlist.get(ACTIVE)
+        self.schoice = self.fchoice[6:]
+        self.pathy = ("{0}\{1}".format(self.folderop,self.schoice))
+        self.MUSIC = eyed3.load(self.pathy)
+        self.songTitle = self.MUSIC.tag.title
+        if self.songTitle == None:
+            self.songTitle = self.schoice
+        self.Songname.config(text = self.songTitle)
+        self.songArtist = self.MUSIC.tag.artist
+        if self.songArtist == None:
+            self.songArtist = 'No Artist'
+        self.Artist.config(text = self.songArtist)
+        self.playMusic = vlc.MediaPlayer(self.pathy)
+        self.PsePly = 'I I'
+        self.music.config(fg ='deepskyblue4')
+        self.pauseplayb.config(text = self.PsePly, font = ('impact',13))
+        self.pauseplayb.place(x = 282, y = -3)
+        self.playMusic.play()
+
+    def Playm(self, event):
+        self.mlist.bind('<Double-Button-1>',self.Stopm)
+        self.proceedPlay()
+
+    def Stopm(self,event):
+        self.mlist.bind('<Double-Button-1>',self.Playm)
+        self.playMusic.stop()
+        self.proceedPlay()
+
+    def pseply(self):
+        if self.PsePly == '▶':
+            self.PsePly = 'I I'
+            self.pauseplayb.config(text = self.PsePly, font = ('impact',13))
+            self.pauseplayb.place(x = 282, y = -3)
+            self.music.config(fg ='deepskyblue4')
+            self.playMusic.play()
+        elif self.PsePly == 'I I':
+            self.PsePly = '▶'
+            self.pauseplayb.config(text = self.PsePly, font = ('impact',18))
+            self.pauseplayb.place(x = 278, y = -12)
+            self.music.config(fg = 'gray20')
+            self.playMusic.pause()
+
+    def stopPlay(self):
+        self.playMusic.stop()
+        self.askdirctry()
+
 Player(root).place()
 
 root.mainloop()
