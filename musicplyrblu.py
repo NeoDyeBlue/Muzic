@@ -52,29 +52,25 @@ class Player(tk.Frame):
 
         self.playFrame = Frame(self.master, height = 62, width = 508, bg = 'gray45',borderwidth = 0)
         self.playFrame.place(x = 0, y = 372)
+
+        self.play = Button(self.playFrame, text = self.PsePly, font = ('impact',20),fg = 'white', bg = 'gray45',
+                           activeforeground = 'deepskyblue',activebackground = 'gray45',borderwidth = 0, command = self.pseply)
+        self.play.place(x = 274, y = 50)
         
         self.progress = Frame(self.playFrame, borderwidth = 0, height = 27, width = 505,bg = 'gray45' )
         self.progress.place(x = 0, y = 0)
         self.pl_time = Label(self.progress, text = '00:00', fg = 'white',bg = 'gray45', font =('calibri',8))
-        self.pl_time.place(x=97,y=3)
+        self.pl_time.place(x=95,y=5)
 
-        self.current_songFrame = Frame(self.playFrame, borderwidth = 0, height = 42, width = 508,bg = 'gray45' )
+        self.current_songFrame = Frame(self.playFrame, borderwidth = 0, height = 42, width = 508,bg = 'gray15' )
         self.current_songFrame.place(x = 0, y = 20)
-        self.Artist = Label(self.current_songFrame, text = 'Artist', font = ('calibri',10,), fg = 'white', bg = 'gray45')
-        self.Artist.place(x = 97, y = 18)
-        self.Songname = Label(self.current_songFrame, text = 'Song Name', font = ('calibri',12,'bold'), fg = 'white', bg = 'gray45')
-        self.Songname.place(x = 97, y = -3)
+        self.Artist = Label(self.current_songFrame, text = 'Artist', font = ('calibri',10,), fg = 'white', bg = 'gray15')
+        self.Artist.place(x = 95, y = 19)
+        self.Songname = Label(self.current_songFrame, text = 'Song Name', font = ('calibri',12,'bold'), fg = 'white', bg = 'gray15')
+        self.Songname.place(x = 95, y = -1)
 
-        self.MPbuttonsFrame = Frame(self.master, height = 28, width = 508, bg = 'gray55')
+        self.MPbuttonsFrame = Frame(self.master, height = 28, width = 508, bg = 'gray45')
         self.MPbuttonsFrame.place(x = 0, y = 438)
-
-        self.play = Button(self.MPbuttonsFrame, text = self.PsePly, font = ('impact',19),fg = 'white', bg = 'gray55',
-                           activeforeground = 'deepskyblue',activebackground = 'gray55',borderwidth = 0, command = self.pseply)
-        self.play.place(x = 114, y = -16)
-
-        self.prev= Button(self.MPbuttonsFrame, text = '<', font = ('impact',17),fg = 'white', bg = 'gray55',
-                           activeforeground = 'deepskyblue',activebackground = 'gray55',borderwidth = 0)
-        self.prev.place(x = 94, y = -8)
 
         self.MusicNoteFrame = Frame(self.master, height = 94, width = 94,borderwidth = 0)
         self.MusicNoteFrame.place(x = 0, y = 372)
@@ -90,13 +86,13 @@ class Player(tk.Frame):
     def pseply(self):
         if self.PsePly == '▶':
             self.PsePly = 'I I'
-            self.play.config(text = self.PsePly, font = ('impact',14))
-            self.play.place(x = 118, y = -4)
+            self.play.config(text = self.PsePly, font = ('impact',15))
+            self.play.place(x = 278, y = 61)
             self.music.config(fg ='deepskyblue4')
         elif self.PsePly == 'I I':
             self.PsePly = '▶'
-            self.play.config(text = self.PsePly, font = ('impact',19))
-            self.play.place(x = 114, y = -16)
+            self.play.config(text = self.PsePly, font = ('impact',20))
+            self.play.place(x = 274, y = 50)
             self.music.config(fg = 'gray15')
 
     def askdirctry(self):
