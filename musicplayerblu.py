@@ -78,12 +78,14 @@ class Player(tk.Frame):
 
     def pseply(self):
         if self.PsePly == '▶':
-            self.PsePly = 'II'
-            self.play.config(text = self.PsePly)
+            self.PsePly = 'I I'
+            self.play.config(text = self.PsePly, font = ('impact',15))
+            self.play.place(x = 275, y = 50)
             self.music.config(fg ='deepskyblue4')
-        elif self.PsePly == 'II':
+        elif self.PsePly == 'I I':
             self.PsePly = '▶'
-            self.play.config(text = self.PsePly)
+            self.play.config(text = self.PsePly, font = ('impact',20))
+            self.play.place(x = 270, y = 40)
             self.music.config(fg = 'gray15')
 
     def askdirctry(self):
