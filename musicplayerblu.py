@@ -16,7 +16,7 @@ class Player(tk.Frame):
     def __init__(self,master):
         tk.Frame.__init__(self,master)
         self.master = master
-        self.master.bind('Return')
+        self.master.bind('<Return>')
         self.MUSICS = list()
         self.PsePly = '▶'
         self.gui()
