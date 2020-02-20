@@ -31,7 +31,7 @@ class Player(tk.Frame):
         self.foldr.place(x = 1, y = -17)
 
         self.fldrnme = Label(self.dirframe, text = '← Choose a folder to look for .mp3 and .wav files.',font =('calibri',8), fg = 'white', bg = 'gray45')
-        self.fldrnme.place(x = 40, y = 5)
+        self.fldrnme.place(x = 40, y = 6)
 
         self.lbframe = Frame(self.MListframe, borderwidth = 0, height = 500, width = 360, bg = 'gray')
         self.lbframe.place(x= 10, y = 40)
@@ -84,38 +84,59 @@ class Player(tk.Frame):
         self.music = Label(self.MusicNoteFrame, text = '♫',fg = 'gray20', font = ('impact',40))
         self.music.place(x = 22, y = 8)
 
+        self.mus = Label(self.dirframe, text = "♫:", font = ('calibri',10), bg = 'gray45')
+        self.mus.place(x = 350, y = 4)
+
+        self.musicount = Label(self.dirframe, text = '0', font = ('calibri', 8), bg = 'gray45', fg = 'white')
+        self.musicount.place(x = 365, y = 6)
+
     def askdirctry(self):
-        self.mlist.bind('<Double-Button-1>', self.Playm)
+        self.MUSICLIST = list()
+        self.music.config(fg = 'gray20')
+        self.foldr.config(command = self.stopPlay)
         self.mlist.delete(0,tk.END)
         self.nomusic.place(x = 108, y = 190)
         self.folderop = filedialog.askdirectory()
 
         if not self.folderop:
+            self.mlist.unbind('<Double-Button-1>')
             self.foldr.config(fg = 'white')
             self.fldrnme.config(text = '← Choose a folder to look for .mp3 and .wav files.')
             self.nomusic.config(text = 'Please choose a folder first!')
+            self.musicount.config(text = '0', fg = 'white')
             self.tobedisabled = [self.pauseplayb,self.prevb,self.nextb]
             for y in self.tobedisabled:
                 y.config(state = DISABLED)
         else:
-            if len(self.folderop) > 65:
-                self.fldrnme.config(text = '← ' + self.folderop[0:65]+'...')
+            if len(self.folderop) > 55:
+                self.fldrnme.config(text = '← ' + self.folderop[0:55]+'...')
             else:
                 self.fldrnme.config(text = '← ' + self.folderop)
 
             for x in os.listdir(self.folderop):
                 if x.endswith('.mp3') or x.endswith('.wav'):
+                    self.mlist.bind('<Double-Button-1>', self.Playm)
+                    self.MUSICLIST.append(x)
                     self.foldr.config(command = self.stopPlay)
                     self.foldr.config(fg ='cyan')
                     self.nomusic.place_forget()
                     self.mlist.insert(END, "   ♪  {0}".format(x))
                     self.mlist.config()
                 else:
+                    self.mlist.unbind('<Double-Button-1>')
                     self.foldr.config(fg = 'white')
                     self.nomusic.config(text = 'No songs found in this folder')
                     self.tobedisabled = [self.pauseplayb,self.prevb,self.nextb]
                     for y in self.tobedisabled:
                         y.config(state = DISABLED)
+            self.countsm = len(self.MUSICLIST)
+            if self.countsm > 999:
+                self.countsm = ('{0}+'.format(len(self.MUSICLIST)))
+                self.musicount.config(text = self.countsm, fg = 'cyan')
+            elif self.countsm == 0:
+                self.musicount.config(text = self.countsm, fg = 'white')
+            else:
+                self.musicount.config(text = self.countsm, fg = 'cyan')
 
     def proceedPlay(self):
         self.mlist.bind('<Double-Button-1>', self.Stopm)
@@ -125,18 +146,23 @@ class Player(tk.Frame):
         self.fchoice = self.mlist.get(ACTIVE)
         self.schoice = self.fchoice[6:]
         self.pathy = ("{0}\{1}".format(self.folderop,self.schoice))
+        
         self.MUSIC = eyed3.load(self.pathy)
         
-        self.songTitle = self.MUSIC.tag.title
-        if self.songTitle == None:
-            self.songTitle = self.schoice
-        self.Songname.config(text = self.songTitle)
+        try:
+            self.songTitle = self.MUSIC.tag.title
+            if self.songTitle == None:
+                self.songTitle = self.schoice
+            self.Songname.config(text = self.songTitle)
         
-        self.songArtist = self.MUSIC.tag.artist
-        if self.songArtist == None:
-            self.songArtist = 'No Artist'
-        self.Artist.config(text = self.songArtist)
-        
+            self.songArtist = self.MUSIC.tag.artist
+            if self.songArtist == None:
+                self.songArtist = 'No Artist'
+            self.Artist.config(text = self.songArtist)
+        except:
+            self.Songname.config(text = self.schoice)
+            self.Artist.config(text = 'Wave File')
+
         self.playMusic = vlc.MediaPlayer(self.pathy)
         self.PsePly = 'I I'
         self.music.config(fg ='deepskyblue4')
@@ -171,7 +197,10 @@ class Player(tk.Frame):
         self.tobedisabled = [self.pauseplayb,self.prevb,self.nextb]
         for y in self.tobedisabled:
             y.config(state = DISABLED)
-        self.playMusic.stop()
+        try:
+            self.playMusic.stop()
+        except:
+            pass
         self.askdirctry()
 
 Player(root).place()
