@@ -36,7 +36,7 @@ class Player(tk.Frame):
         self.lbframe = Frame(self.MListframe, borderwidth = 0, height = 500, width = 360, bg = 'gray')
         self.lbframe.place(x= 10, y = 40)
 
-        self.sb = Scrollbar(self.lbframe, orient = VERTICAL,bg = 'deepskyblue')
+        self.sb = Scrollbar(self.lbframe, orient = VERTICAL,bg = 'gray5')
         self.sb.pack(side = 'right', fill = 'y')
 
         self.mlist = Listbox(self.lbframe,fg = 'white',bg = 'gray15', font = ('calibri',10),highlightcolor  = 'deepskyblue',
