@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import *
+import pygame
+import time
 import eyed3
 import os
 os.add_dll_directory(r'C:\Program Files\VideoLAN\VLC')
@@ -53,8 +55,10 @@ class Player(tk.Frame):
         
         self.progress = Frame(self.playFrame, borderwidth = 0, height = 27, width = 505,bg = 'gray45' )
         self.progress.place(x = 0, y = 0)
-        self.pl_time = Label(self.progress, text = '00:00', fg = 'white',bg = 'gray45', font =('calibri',8))
+        self.pl_time = Label(self.progress, text = '--:--', fg = 'white',bg = 'gray45', font =('calibri',8))
         self.pl_time.place(x=97,y=3)
+        self.tl_time = Label(self.progress, text = '--:--', fg = 'white',bg = 'gray45', font =('calibri',8))
+        self.tl_time.place(x=472,y=3)
 
         self.current_songFrame = Frame(self.playFrame, borderwidth = 0, height = 42, width = 508,bg = 'gray45' )
         self.current_songFrame.place(x = 0, y = 20)
@@ -148,20 +152,36 @@ class Player(tk.Frame):
         self.pathy = ("{0}\{1}".format(self.folderop,self.schoice))
         
         self.MUSIC = eyed3.load(self.pathy)
-        
         try:
             self.songTitle = self.MUSIC.tag.title
             if self.songTitle == None:
-                self.songTitle = self.schoice
+                if len(self.schoice) > 50:
+                    self.songTitle = ("{0}...".format(self.schoice[:50]))
+                else:
+                    self.songTitle = self.schoice
+                self.Artist.config(text = 'Song File')
+            else:
+                try:
+                    self.songArtist = self.MUSIC.tag.artist
+                    if self.songArtist == None:
+                        self.songArtist = 'No Artist'
+                    self.Artist.config(text = self.songArtist)
+                except AttributeError:
+                    self.Artist.config(text = 'Song File')
+            if len(self.songTitle) > 50:
+                self.songTitle = ("{0}...".format(self.songTitle[:50]))
+            else:
+                pass
             self.Songname.config(text = self.songTitle)
-        
-            self.songArtist = self.MUSIC.tag.artist
-            if self.songArtist == None:
-                self.songArtist = 'No Artist'
-            self.Artist.config(text = self.songArtist)
-        except:
+        except AttributeError:
             self.Songname.config(text = self.schoice)
-            self.Artist.config(text = 'Wave File')
+
+        self.duration = self.MUSIC.info.time_secs
+        self.mins, self.secs = divmod(self.duration,60)
+        self.mins = round(self.mins)
+        self.secs = round(self.secs)
+        self.timeplay = ("{:02d}:{:02d}".format(self.mins,self.secs))
+        self.tl_time.config(text = self.timeplay)
 
         self.playMusic = vlc.MediaPlayer(self.pathy)
         self.PsePly = 'I I'
