@@ -55,10 +55,12 @@ class Player(tk.Frame):
         
         self.progress = Frame(self.playFrame, borderwidth = 0, height = 27, width = 505,bg = 'gray45' )
         self.progress.place(x = 0, y = 0)
-        self.pl_time = Label(self.progress, text = '--:--', fg = 'white',bg = 'gray45', font =('calibri',8))
+        self.pl_time = Label(self.progress, text = '00:00', fg = 'white',bg = 'gray45', font =('calibri',8))
         self.pl_time.place(x=97,y=3)
-        self.tl_time = Label(self.progress, text = '--:--', fg = 'white',bg = 'gray45', font =('calibri',8))
-        self.tl_time.place(x=472,y=3)
+        self.tl_time = Label(self.progress, text = '00:00', fg = 'white',bg = 'gray45', font =('calibri',8))
+        self.tl_time.place(x=471,y=3)
+        self.pbar = Frame(self.progress,borderwidth = 0, height = 2, width = 331, bg = 'gray60')
+        self.pbar.place(x = 134, y = 11)
 
         self.current_songFrame = Frame(self.playFrame, borderwidth = 0, height = 42, width = 508,bg = 'gray45' )
         self.current_songFrame.place(x = 0, y = 20)
