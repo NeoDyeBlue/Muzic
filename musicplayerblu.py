@@ -165,6 +165,9 @@ class Player(tk.Frame):
             self.playMusic.pause()
 
     def stopPlay(self):
+        self.tobedisabled = [self.pauseplayb,self.prevb,self.nextb]
+        for y in self.tobedisabled:
+            y.config(state = DISABLED)
         self.playMusic.stop()
         self.askdirctry()
 
