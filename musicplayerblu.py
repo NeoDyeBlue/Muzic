@@ -86,7 +86,6 @@ class Player(tk.Frame):
 
     def askdirctry(self):
         self.mlist.bind('<Double-Button-1>', self.Playm)
-        self.foldr.config(command = self.stopPlay)
         self.mlist.delete(0,tk.END)
         self.nomusic.place(x = 108, y = 190)
         self.folderop = filedialog.askdirectory()
@@ -106,6 +105,7 @@ class Player(tk.Frame):
 
             for x in os.listdir(self.folderop):
                 if x.endswith('.mp3') or x.endswith('.wav'):
+                    self.foldr.config(command = self.stopPlay)
                     self.foldr.config(fg ='cyan')
                     self.nomusic.place_forget()
                     self.mlist.insert(END, "   ♪  {0}".format(x))
