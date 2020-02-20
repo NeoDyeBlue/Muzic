@@ -126,14 +126,17 @@ class Player(tk.Frame):
         self.schoice = self.fchoice[6:]
         self.pathy = ("{0}\{1}".format(self.folderop,self.schoice))
         self.MUSIC = eyed3.load(self.pathy)
+        
         self.songTitle = self.MUSIC.tag.title
         if self.songTitle == None:
             self.songTitle = self.schoice
         self.Songname.config(text = self.songTitle)
+        
         self.songArtist = self.MUSIC.tag.artist
         if self.songArtist == None:
             self.songArtist = 'No Artist'
         self.Artist.config(text = self.songArtist)
+        
         self.playMusic = vlc.MediaPlayer(self.pathy)
         self.PsePly = 'I I'
         self.music.config(fg ='deepskyblue4')
