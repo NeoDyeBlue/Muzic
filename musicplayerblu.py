@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import *
-from tkinter.ttk import Progressbar
+from tkinter.ttk import Progressbar, Style
 #import pygame
 import time
 import eyed3
@@ -19,6 +19,7 @@ class Player(tk.Frame):
     def __init__(self,master):
         tk.Frame.__init__(self,master)
         self.master = master
+        self.ind = None
         self.PsePly = '▶'
         self.gui()
 
@@ -54,16 +55,19 @@ class Player(tk.Frame):
         self.playFrame = Frame(self.master, height = 62, width = 508, bg = 'gray45',borderwidth = 0)
         self.playFrame.place(x = 0, y = 372)
         
-        self.progress = Frame(self.playFrame, borderwidth = 0, height = 27, width = 505,bg = 'gray45' )
-        self.progress.place(x = 0, y = 0)
-        self.pl_time = Label(self.progress, text = '00:00', fg = 'white',bg = 'gray45', font =('calibri',8))
+        self.progressFrame = Frame(self.playFrame, borderwidth = 0, height = 27, width = 505,bg = 'gray45' )
+        self.progressFrame.place(x = 0, y = 0)
+        self.pl_time = Label(self.progressFrame, text = '00:00', fg = 'white',bg = 'gray45', font =('calibri',8))
         self.pl_time.place(x=97,y=3)
-        self.tl_time = Label(self.progress, text = '00:00', fg = 'white',bg = 'gray45', font =('calibri',8))
+        self.tl_time = Label(self.progressFrame, text = '00:00', fg = 'white',bg = 'gray45', font =('calibri',8))
         self.tl_time.place(x=471,y=3)
-        self.pbar = Frame(self.progress,borderwidth = 0, height = 2, width = 331, bg = 'gray60')
+        self.pbar = Frame(self.progressFrame,borderwidth = 0, height = 2, width = 331, bg = 'gray60')
         self.pbar.place(x = 134, y = 11)
-        
-        self.pbarr = Progressbar(self.pbar, length = 331)
+        self.thme = Style()
+        self.thme.theme_use('clam')
+        self.thme.configure("cyanpbar.Horizontal.TProgressbar", troughcolor = 'gray50', background = 'cyan', bordercolor = 'gray50',
+                            lightcolor = 'cyan',darkcolor = 'cyan', borderwidth = 0)
+        self.pbarr = Progressbar(self.pbar,style = "cyanpbar.Horizontal.TProgressbar", length = 331, mode = 'determinate')
         self.pbarr.place(x = 0, y = 0)
 
         self.current_songFrame = Frame(self.playFrame, borderwidth = 0, height = 42, width = 508,bg = 'gray45' )
@@ -81,11 +85,11 @@ class Player(tk.Frame):
         self.pauseplayb.place(x = 278, y = -12)
 
         self.prevb= Button(self.MPbuttonsFrame, text = '<', font = ('impact',17),fg = 'white', bg = 'gray15',state = DISABLED,
-                           activeforeground = 'deepskyblue',activebackground = 'gray15',borderwidth = 0)
+                           activeforeground = 'deepskyblue',activebackground = 'gray15',borderwidth = 0, command = self.Prevbtn)
         self.prevb.place(x = 248, y = -8)
 
         self.nextb= Button(self.MPbuttonsFrame, text = '>', font = ('impact',17),fg = 'white', bg = 'gray15',state = DISABLED,
-                           activeforeground = 'deepskyblue',activebackground = 'gray15',borderwidth = 0)
+                           activeforeground = 'deepskyblue',activebackground = 'gray15',borderwidth = 0, command = self.Nextbtn)
         self.nextb.place(x = 314, y = -8)
 
         self.MusicNoteFrame = Frame(self.master, height = 94, width = 94,borderwidth = 0)
@@ -153,18 +157,17 @@ class Player(tk.Frame):
         self.tobeenabled = [self.pauseplayb, self.prevb,self.nextb]
         for x in self.tobeenabled:
             x.config(state = NORMAL)
-        self.fchoice = self.mlist.get(ACTIVE)
-        self.schoice = self.fchoice[6:]
-        self.pathy = ("{0}\{1}".format(self.folderop,self.schoice))
+        self.fchoice = self.MUSICLIST[self.ind]
+        self.pathy = ("{0}\{1}".format(self.folderop,self.fchoice))
         
         self.MUSIC = eyed3.load(self.pathy)
         try:
             self.songTitle = self.MUSIC.tag.title
             if self.songTitle == None:
-                if len(self.schoice) > 50:
-                    self.songTitle = ("{0}...".format(self.schoice[:50]))
+                if len(self.fchoice) > 50:
+                    self.songTitle = ("{0}...".format(self.fchoice[:50]))
                 else:
-                    self.songTitle = self.schoice
+                    self.songTitle = self.fchoice
                 self.Artist.config(text = 'Song File')
             else:
                 try:
@@ -180,7 +183,7 @@ class Player(tk.Frame):
                 pass
             self.Songname.config(text = self.songTitle)
         except AttributeError:
-            self.Songname.config(text = self.schoice)
+            self.Songname.config(text = self.fchoice)
 
         self.duration = self.MUSIC.info.time_secs
         self.mins, self.secs = divmod(self.duration,60)
@@ -195,16 +198,45 @@ class Player(tk.Frame):
         self.pauseplayb.config(text = self.PsePly, font = ('impact',13))
         self.pauseplayb.place(x = 282, y = -3)
         self.playMusic.play()
+        self.bar()
 
     def Playm(self, event):
+        self.ind = self.mlist.index(ACTIVE)
         self.mlist.bind('<Double-Button-1>',self.Stopm)
         self.proceedPlay()
 
     def Stopm(self,event):
+        self.ind = self.mlist.index(ACTIVE)
         self.mlist.bind('<Double-Button-1>',self.Playm)
         self.playMusic.stop()
         self.proceedPlay()
 
+    def Nextbtn(self):
+        self.ind += 1
+        self.mlist.selection_clear(0, END)
+        self.mlist.selection_set(self.ind)
+        self.mlist.activate(self.ind)
+        self.playMusic.stop()
+        if self.ind == len(self.MUSICLIST):
+            self.ind = 0
+            self.mlist.selection_set(0)
+            self.mlist.selection_set(0)
+            self.mlist.activate(0)
+        self.proceedPlay()
+
+    def Prevbtn(self):
+        self.ind -= 1
+        self.mlist.selection_clear(0, END)
+        self.mlist.selection_set(self.ind)
+        self.mlist.activate(self.ind)
+        self.playMusic.stop()
+        if self.ind == -1:
+            self.ind += len(self.MUSICLIST)
+            self.mlist.selection_clear(0, END)
+            self.mlist.selection_set(self.ind)
+            self.mlist.activate(self.ind)
+        self.proceedPlay()
+        
     def pseply(self):
         if self.PsePly == '▶':
             self.PsePly = 'I I'
@@ -228,6 +260,33 @@ class Player(tk.Frame):
         except:
             pass
         self.askdirctry()
+    
+    def bar(self): 
+        pass
+    """
+        self.pbarr['value'] = 20
+        self.master.update_idletasks() 
+        time.sleep(1) 
+    
+        self.pbarr['value'] = 40
+        self.master.update_idletasks() 
+        time.sleep(1) 
+    
+        self.pbarr['value'] = 50
+        self.master.update_idletasks() 
+        time.sleep(1) 
+    
+        self.pbarr['value'] = 60
+        self.master.update_idletasks() 
+        time.sleep(1) 
+    
+        self.pbarr['value'] = 80
+        self.master.update_idletasks() 
+        time.sleep(1) 
+        self.pbarr['value'] = 100
+    
+        self.pbarr.pack(side = LEFT, fill = X, padx = 0)
+    """
 
 Player(root).place()
 
