@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import filedialog
 from tkinter import *
 from tkinter.ttk import Progressbar, Style
+from threading import Thread
 #import pygame
 import time
 import eyed3
@@ -20,10 +21,15 @@ class Player(tk.Frame):
         tk.Frame.__init__(self,master)
         self.master = master
         self.ind = None
-        self.PsePly = '▶'
+        self.PausePlayIcon = '▶'
         self.gui()
 
     def gui(self):
+        self.volume = Scale(self.master, bd = 0, orient = VERTICAL, bg = 'gray20', length = 361, fg = 'cyan',
+                            width = 60,activebackground = 'gray45', borderwidth = 0,troughcolor = 'gray25',
+                            highlightbackground = 'gray45', from_ = 100, to = 0)
+
+        self.volume.place(x = -2, y = 10)
         self.MListframe = Frame(self.master, height = 374, width = 420, borderwidth = 0, bg = 'gray20')
         self.MListframe.place(x = 94, y = 0)
 
@@ -43,7 +49,7 @@ class Player(tk.Frame):
         self.sb = Scrollbar(self.lbframe, orient = VERTICAL,bg = 'gray5')
         self.sb.pack(side = 'right', fill = 'y')
 
-        self.mlist = Listbox(self.lbframe,fg = 'white',bg = 'gray15', font = ('calibri',10),highlightcolor  = 'deepskyblue',
+        self.mlist = Listbox(self.lbframe,fg = 'white',bg = 'gray15', font = ('calibri',10),highlightcolor  = 'gray15',
                              selectbackground = 'deepskyblue4', height = 20,width = 55,bd = 0,yscrollcommand = self.sb.set)
         self.mlist.pack()
 
@@ -80,7 +86,7 @@ class Player(tk.Frame):
         self.MPbuttonsFrame = Frame(self.master, height = 28, width = 508, bg = 'gray15')
         self.MPbuttonsFrame.place(x = 0, y = 438)
 
-        self.pauseplayb = Button(self.MPbuttonsFrame, text = self.PsePly, font = ('impact',18),fg = 'white', bg = 'gray15',state = DISABLED,
+        self.pauseplayb = Button(self.MPbuttonsFrame, text = self.PausePlayIcon, font = ('impact',18),fg = 'white', bg = 'gray15',state = DISABLED,
                            activeforeground = 'deepskyblue',activebackground = 'gray15',borderwidth = 0, command = self.pseply)
         self.pauseplayb.place(x = 278, y = -12)
 
@@ -189,13 +195,14 @@ class Player(tk.Frame):
         self.mins, self.secs = divmod(self.duration,60)
         self.mins = round(self.mins)
         self.secs = round(self.secs)
+        print(self.mins, self.secs)
         self.timeplay = ("{:02d}:{:02d}".format(self.mins,self.secs))
         self.tl_time.config(text = self.timeplay)
 
         self.playMusic = vlc.MediaPlayer(self.pathy)
-        self.PsePly = 'I I'
+        self.PausePlayIcon = 'I I'
         self.music.config(fg ='deepskyblue4')
-        self.pauseplayb.config(text = self.PsePly, font = ('impact',13))
+        self.pauseplayb.config(text = self.PausePlayIcon, font = ('impact',13))
         self.pauseplayb.place(x = 282, y = -3)
         self.playMusic.play()
         self.bar()
@@ -203,13 +210,15 @@ class Player(tk.Frame):
     def Playm(self, event):
         self.ind = self.mlist.index(ACTIVE)
         self.mlist.bind('<Double-Button-1>',self.Stopm)
-        self.proceedPlay()
+        Thread(target = self.proceedPlay).start()
+        Thread(target = self.bar).start()
 
     def Stopm(self,event):
         self.ind = self.mlist.index(ACTIVE)
         self.mlist.bind('<Double-Button-1>',self.Playm)
         self.playMusic.stop()
-        self.proceedPlay()
+        Thread(target = self.proceedPlay).start()
+        Thread(target = self.bar).start()
 
     def Nextbtn(self):
         self.ind += 1
@@ -222,7 +231,8 @@ class Player(tk.Frame):
             self.mlist.selection_set(0)
             self.mlist.selection_set(0)
             self.mlist.activate(0)
-        self.proceedPlay()
+        Thread(target = self.proceedPlay).start()
+        Thread(target = self.bar).start()
 
     def Prevbtn(self):
         self.ind -= 1
@@ -235,18 +245,19 @@ class Player(tk.Frame):
             self.mlist.selection_clear(0, END)
             self.mlist.selection_set(self.ind)
             self.mlist.activate(self.ind)
-        self.proceedPlay()
+        Thread(target = self.proceedPlay).start()
+        Thread(target = self.bar).start()
         
     def pseply(self):
-        if self.PsePly == '▶':
-            self.PsePly = 'I I'
-            self.pauseplayb.config(text = self.PsePly, font = ('impact',13))
+        if self.PausePlayIcon == '▶':
+            self.PausePlayIcon = 'I I'
+            self.pauseplayb.config(text = self.PausePlayIcon, font = ('impact',13))
             self.pauseplayb.place(x = 282, y = -3)
             self.music.config(fg ='deepskyblue4')
             self.playMusic.play()
-        elif self.PsePly == 'I I':
-            self.PsePly = '▶'
-            self.pauseplayb.config(text = self.PsePly, font = ('impact',18))
+        elif self.PausePlayIcon == 'I I':
+            self.PausePlayIcon = '▶'
+            self.pauseplayb.config(text = self.PausePlayIcon, font = ('impact',18))
             self.pauseplayb.place(x = 278, y = -12)
             self.music.config(fg = 'gray20')
             self.playMusic.pause()
@@ -261,32 +272,31 @@ class Player(tk.Frame):
             pass
         self.askdirctry()
     
-    def bar(self): 
-        pass
-    """
-        self.pbarr['value'] = 20
-        self.master.update_idletasks() 
-        time.sleep(1) 
+    def bar(self):
+
+        self.m = 0
+        self.s = -1
+        self.timePlay = ''
+        while self.timePlay != self.timeplay:
+            if self.s == 59:
+                self.s = -1
+                self.m += 1
+            self.s += 1
+            self.timePlay += ("{:02d}:{:02d}".format(self.m,self.s))
+            self.pl_time.place_forget()
+            self.pl_time.config(text = self.timePlay)
+            self.pl_time.place(x=97,y=3)
+            self.timePlay = ''
+            time.sleep(1)
+  
+        for i in range(0,101,1):
+            self.pbarr['value'] = i
+            self.master.update_idletasks()
+            time.sleep(1)
+
+            self.pbarr.pack(side = LEFT, fill = X, padx = 0)
+        
     
-        self.pbarr['value'] = 40
-        self.master.update_idletasks() 
-        time.sleep(1) 
-    
-        self.pbarr['value'] = 50
-        self.master.update_idletasks() 
-        time.sleep(1) 
-    
-        self.pbarr['value'] = 60
-        self.master.update_idletasks() 
-        time.sleep(1) 
-    
-        self.pbarr['value'] = 80
-        self.master.update_idletasks() 
-        time.sleep(1) 
-        self.pbarr['value'] = 100
-    
-        self.pbarr.pack(side = LEFT, fill = X, padx = 0)
-    """
 
 Player(root).place()
 
