@@ -25,9 +25,9 @@ class Player(tk.Frame):
         self.gui()
 
     def gui(self):
-        self.volume = Scale(self.master, bd = 0, orient = VERTICAL, bg = 'gray20', length = 361, fg = 'cyan',
+        self.volume = Scale(self.master, bd = 0, orient = VERTICAL, bg = 'gray20', length = 348, fg = 'cyan',
                             width = 60,activebackground = 'gray45', borderwidth = 0,troughcolor = 'gray25',
-                            highlightbackground = 'gray45', from_ = 100, to = 0)
+                            highlightbackground = 'gray45', from_ = 100, to = 0, font = ('calibri',10))
 
         self.volume.place(x = -2, y = 10)
         self.MListframe = Frame(self.master, height = 374, width = 420, borderwidth = 0, bg = 'gray20')
@@ -50,7 +50,7 @@ class Player(tk.Frame):
         self.sb.pack(side = 'right', fill = 'y')
 
         self.mlist = Listbox(self.lbframe,fg = 'white',bg = 'gray15', font = ('calibri',10),highlightcolor  = 'gray15',
-                             selectbackground = 'deepskyblue4', height = 20,width = 55,bd = 0,yscrollcommand = self.sb.set)
+                             selectbackground = 'cyan4', height = 20,width = 55,bd = 0,yscrollcommand = self.sb.set)
         self.mlist.pack()
 
         self.sb.config(command = self.mlist.yview)
@@ -87,15 +87,15 @@ class Player(tk.Frame):
         self.MPbuttonsFrame.place(x = 0, y = 438)
 
         self.pauseplayb = Button(self.MPbuttonsFrame, text = self.PausePlayIcon, font = ('impact',18),fg = 'white', bg = 'gray15',state = DISABLED,
-                           activeforeground = 'deepskyblue',activebackground = 'gray15',borderwidth = 0, command = self.pseply)
+                           activeforeground = 'cyan4',activebackground = 'gray15',borderwidth = 0, command = self.pseply)
         self.pauseplayb.place(x = 278, y = -12)
 
         self.prevb= Button(self.MPbuttonsFrame, text = '<', font = ('impact',17),fg = 'white', bg = 'gray15',state = DISABLED,
-                           activeforeground = 'deepskyblue',activebackground = 'gray15',borderwidth = 0, command = self.Prevbtn)
+                           activeforeground = 'cyan4',activebackground = 'gray15',borderwidth = 0, command = self.Prevbtn)
         self.prevb.place(x = 248, y = -8)
 
         self.nextb= Button(self.MPbuttonsFrame, text = '>', font = ('impact',17),fg = 'white', bg = 'gray15',state = DISABLED,
-                           activeforeground = 'deepskyblue',activebackground = 'gray15',borderwidth = 0, command = self.Nextbtn)
+                           activeforeground = 'cyan4',activebackground = 'gray15',borderwidth = 0, command = self.Nextbtn)
         self.nextb.place(x = 314, y = -8)
 
         self.MusicNoteFrame = Frame(self.master, height = 94, width = 94,borderwidth = 0)
@@ -201,7 +201,7 @@ class Player(tk.Frame):
 
         self.playMusic = vlc.MediaPlayer(self.pathy)
         self.PausePlayIcon = 'I I'
-        self.music.config(fg ='deepskyblue4')
+        self.music.config(fg ='cyan4')
         self.pauseplayb.config(text = self.PausePlayIcon, font = ('impact',13))
         self.pauseplayb.place(x = 282, y = -3)
         self.playMusic.play()
@@ -253,7 +253,7 @@ class Player(tk.Frame):
             self.PausePlayIcon = 'I I'
             self.pauseplayb.config(text = self.PausePlayIcon, font = ('impact',13))
             self.pauseplayb.place(x = 282, y = -3)
-            self.music.config(fg ='deepskyblue4')
+            self.music.config(fg ='cyan4')
             self.playMusic.play()
         elif self.PausePlayIcon == 'I I':
             self.PausePlayIcon = '▶'
