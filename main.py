@@ -29,7 +29,7 @@ class Player(tk.Frame):
         self.nextIfDoneHandle = None
         self.direction = "Down"
 
-        self.bgFrame = Frame(self.master, bg = 'gray20', height = 352, width = 85)
+        self.bgFrame = Frame(self.master, bg = 'gray20', height = 351, width = 85)
         self.bgFrame.place(x= 0, y = 10)
 
         self.seperatorLabel = Label(self.bgFrame, text = ". .", font = ("calibri",45), bg = 'gray20', fg = 'ghostwhite')
