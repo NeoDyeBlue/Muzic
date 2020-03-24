@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import *
+from pydub import AudioSegment
 import random
 import eyed3
 import os
@@ -9,7 +10,7 @@ import vlc
 
 root = tk.Tk()
 root.title("Music Player ♫")
-root.geometry('508x470')
+root.geometry('506x470')
 root.config(bg = 'gray30')
 root.resizable(False,False)
 
@@ -23,6 +24,7 @@ class Player(tk.Frame):
         self.ind = None
         self.pausePlayIcon = '▶'
         self.timeSeconds = None
+        self.duration = None
         self.countSeconds = 0
         self.nextIfDoneHandle = None
         self.direction = "Down"
@@ -74,7 +76,7 @@ class Player(tk.Frame):
         self.progressFrame.place(x = 0, y = 0)
         
         self.totalTime = Label(self.progressFrame, text = 'Length: 00:00', fg = 'white',bg = 'gray45', font =('calibri',8))
-        self.totalTime.place(x=431,y=3)
+        self.totalTime.place(x=429,y=3)
         
         self.barLine = Frame(self.progressFrame,borderwidth = 0, height = 3, width = 328, bg = 'gray55')
         self.barLine.place(x = 90, y = 11)
@@ -210,17 +212,21 @@ class Player(tk.Frame):
                 if self.songArtist is None:
                         self.songArtist = 'No artist'
                 self.artist.config(text = self.songArtist)
+                self.duration = self.MUSIC.info.time_secs
 
             elif self.fileChoice.endswith(".wav"):
                 self.songTitle = self.fileChoice
                 
                 if len(self.songTitle) > 50:
                     self.songTitle = ("{0}...".format(self.songTitle[:50]))
-                self.songName.config(text = songTitle)
+                self.songName.config(text = self.songTitle)
 
                 self.artist.config(text = "Wav file")
 
-            self.duration = self.MUSIC.info.time_secs
+                wavFile = AudioSegment.from_file(self.pathChoice)
+                self.duration = wavFile.duration_seconds
+            
+            
             self.timeSeconds = int(self.duration)
             self.mins, self.secs = divmod(self.duration,60)
             self.mins = round(self.mins)
@@ -235,6 +241,7 @@ class Player(tk.Frame):
             self.pauseAndPlayButton.place(x = 282, y = -3)
             self.nextIfDone()
             self.playMusic.play()
+            
         except:
             for y in self.tobeEnabledDisabled:
                 y.config(state = DISABLED)
@@ -377,6 +384,5 @@ class Player(tk.Frame):
         self.master.destroy()
 
 Player(root).place()
-
 
 root.mainloop()
