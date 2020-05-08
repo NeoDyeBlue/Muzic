@@ -5,8 +5,12 @@ from pydub import AudioSegment
 import random
 import eyed3
 import os
-os.add_dll_directory(r'C:\Program Files\VideoLAN\VLC')
-import vlc
+
+try:
+    os.add_dll_directory(r'C:\Program Files\VideoLAN\VLC')
+    import vlc
+except:
+    import vlc
 
 root = tk.Tk()
 root.title("Music Player ♫")
@@ -92,13 +96,15 @@ class Player(tk.Frame):
 
         self.musicControlsFrame = Frame(self.master, height = 28, width = 508, bg = 'gray15')
         self.musicControlsFrame.place(x = 0, y = 438)
-
+       
         #optional barLines in musicControlsFrame
-        #self.barLine0 = Frame(self.musicControlsFrame,borderwidth = 0, height = 2, width = 150, bg = 'gray25')
-        #self.barLine0.place(x = 90, y = 13)
+        """
+        self.barLine0 = Frame(self.musicControlsFrame,borderwidth = 0, height = 2, width = 150, bg = 'gray25')
+        self.barLine0.place(x = 90, y = 13)
 
-        #self.barLine1 = Frame(self.musicControlsFrame,borderwidth = 0, height = 2, width = 170, bg = 'gray25')
-        #self.barLine1.place(x = 345, y = 13)
+        self.barLine1 = Frame(self.musicControlsFrame,borderwidth = 0, height = 2, width = 170, bg = 'gray25')
+        self.barLine1.place(x = 345, y = 13)
+        """
 
         self.pauseAndPlayButton = Button(self.musicControlsFrame, text = self.pausePlayIcon, font = ('impact',18),fg = 'white', bg = 'gray15',state = DISABLED,
                         activeforeground = 'cyan4',activebackground = 'gray15',borderwidth = 0, command = self.pseply)
@@ -118,7 +124,7 @@ class Player(tk.Frame):
         self.noteIconLabel = Label(self.musicNoteFrame, text = '♫',fg = 'gray20', font = ('impact',40))
         self.noteIconLabel.place(x = 22, y = 8)
 
-        self.noteDirIconLabel = Label(self.directoryFrame, text = "♫:", font = ('calibri',10), bg = 'gray45')
+        self.noteDirIconLabel = Label(self.directoryFrame, text = "♫:", font = ('calibri',10),fg = 'gray20', bg = 'gray45')
         self.noteDirIconLabel.place(x = 350, y = 4)
 
         self.musicCount = Label(self.directoryFrame, text = '0', font = ('calibri', 8), bg = 'gray45', fg = 'white')
@@ -179,6 +185,15 @@ class Player(tk.Frame):
         for x in self.tobeEnabledDisabled:
             x.config(state = NORMAL)
 
+        for m in range(len(self.MUSICLIST)):
+            if m == self.ind:
+                self.musicListBox.delete(m)
+                self.musicListBox.insert(m, "   ▶ {0}".format(self.MUSICLIST[m]))
+            else:
+                self.musicListBox.delete(m)
+                self.musicListBox.insert(m, "   ♪  {0}".format(self.MUSICLIST[m]))
+                
+
         self.musicListBox.selection_clear(0, END)
         self.musicListBox.selection_set(self.ind)
         self.musicListBox.activate(self.ind)
@@ -195,13 +210,13 @@ class Player(tk.Frame):
                     self.songTitle = None
                 
                 if self.songTitle is None:
-                    if len(self.fileChoice) > 50:
-                        self.songTitle = ("{0}...".format(self.fileChoice[:50]))
+                    if len(str(self.fileChoice)) > 40:
+                        self.songTitle = ("{0}...".format(self.fileChoice[:40]))
                     else:
                         self.songTitle = self.fileChoice
                 else:
-                    if len(self.songTitle) > 50:
-                        self.songTitle = ("{0}...".format(self.songTitle[:50]))
+                    if len(str(self.songTitle)) > 40:
+                        self.songTitle = ("{0}...".format(self.songTitle[:40]))
                 self.songName.config(text = self.songTitle)
 
                 try:
@@ -217,8 +232,8 @@ class Player(tk.Frame):
             elif self.fileChoice.endswith(".wav"):
                 self.songTitle = self.fileChoice
                 
-                if len(self.songTitle) > 50:
-                    self.songTitle = ("{0}...".format(self.songTitle[:50]))
+                if len(str(self.songTitle)) > 40:
+                    self.songTitle = ("{0}...".format(self.songTitle[:40]))
                 self.songName.config(text = self.songTitle)
 
                 self.artist.config(text = "Wav file")
@@ -341,7 +356,8 @@ class Player(tk.Frame):
 
     def onShuffle(self):
         pass
-    
+
+    #displays time elapsed
     def nextIfDone(self):
         if self.countSeconds < self.timeSeconds:
             self.countSeconds += 1
